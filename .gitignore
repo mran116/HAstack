@@ -1,0 +1,15 @@
+# secrets — NEVER commit
+.env
+.env.*
+!.env.example
+secrets.yaml
+*.token
+**/.storage/
+home-assistant_v2.db*
+*.log
+
+# generated / runtime
+config/.cloud/
+config/tts/
+config/deps/
+config/.HA_VERSION
