@@ -1,4 +1,6 @@
 # files vendored from core — managed by sync-tooling, do not edit:
+hs
+bootstrap.sh
 scripts/lib/common.sh
 stacks.sh
 scripts/create-network.sh
