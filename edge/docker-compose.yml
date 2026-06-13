@@ -1,0 +1,69 @@
+services:
+
+  # ===========================================================================
+  # EDGE — per-machine ingress + mesh. Carried in every repo, opt-in per host.
+  #
+  # Caddy (reverse proxy, clean URLs + TLS) and Tailscale (private mesh / remote
+  # access) are things EVERY machine running stacks may want — they don't belong
+  # to any one app repo. Enable on a host with:  COMPOSE_PROFILES=caddy,tailscale
+  # (bootstrap asks). Each stack opts into Caddy routing via its own `caddy.*`
+  # labels; with Tailscale up, the whole host is reachable over the tailnet.
+  #
+  # The `home` network is created idempotently by the deploy (ensure_network), so
+  # this — like every stack — just joins it as external.
+  # ===========================================================================
+  caddy:
+    build: ./caddy
+    container_name: caddy
+    restart: unless-stopped
+    profiles: ["caddy"]
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      - CADDY_INGRESS_NETWORKS=${HOME_NETWORK:-home}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN:-}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIG_PATH:-./data}/caddy/data:/data
+      - ${CONFIG_PATH:-./data}/caddy/config:/config
+      - ${CONFIG_PATH:-./data}/caddy/logs:/var/log/caddy
+    labels:
+      caddy.email: ${ACME_EMAIL:-}
+      caddy.acme_dns: "cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}"
+      caddy.log.output: "file /var/log/caddy/access.log"
+      caddy.log.format: json
+    networks:
+      - home
+
+  # ===========================================================================
+  # TAILSCALE — private WireGuard mesh. The host joins your tailnet; every service
+  # is then reachable over it from anywhere, no ports opened. Get TS_AUTHKEY from
+  # the Tailscale admin console. Per-stack HTTPS exposure on the tailnet is an
+  # optional `TS_SERVE` extension; the default (whole-host reachable) needs nothing.
+  # ===========================================================================
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: tailscale
+    restart: unless-stopped
+    profiles: ["tailscale"]
+    hostname: ${TS_HOSTNAME:-homestack}
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY:-}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+      - TS_EXTRA_ARGS=${TS_EXTRA_ARGS:---accept-routes}
+    volumes:
+      - ${CONFIG_PATH:-./data}/tailscale:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    networks:
+      - home
+
+networks:
+  home:
+    name: ${HOME_NETWORK:-home}
+    external: true

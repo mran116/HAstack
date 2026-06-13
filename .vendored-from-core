@@ -1,0 +1,7 @@
+# files vendored from core — managed by sync-tooling, do not edit:
+scripts/lib/common.sh
+stacks.sh
+scripts/staggered-up.sh
+scripts/stacks.sh
+scripts/mount-watchdog.sh
+edge/
