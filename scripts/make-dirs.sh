@@ -30,7 +30,13 @@ stack_dirs=("$CONFIG_PATH" "$CONFIG_PATH/homepage")
 # the NAS isn't mounted (or the path's a typo), making an empty local dir at the
 # mountpoint hides your library AND sends app writes to local disk instead of the
 # NAS. A missing one only WARNS (and, interactively, offers to create).
-external_dirs=("$MEDIA_PATH" "$PHOTOS_PATH" "$DOCS_PATH" "$SYNC_PATH")
+# Only the mount vars THIS repo actually defines — a media-only repo sets
+# MEDIA_PATH but not PHOTOS/DOCS/SYNC, so skip any that are unset/blank (the
+# repo's .env is the source of truth for which libraries it has).
+external_dirs=()
+for _mv in MEDIA_PATH PHOTOS_PATH DOCS_PATH SYNC_PATH; do
+  [[ -n "${!_mv:-}" ]] && external_dirs+=("${!_mv}")
+done
 
 # Local fast-scratch dirs (SAB usenet incomplete, Tdarr cache). Handled best-effort
 # below so a root-owned parent (e.g. /mnt) only warns — it never aborts make-dirs.
