@@ -1,7 +1,7 @@
 # homeassistant
 
 The **Home Assistant / IoT domain** — separate from `home` because it's a
-different runtime (the HAOS VM at `172.25.1.207`, not docker-compose), a
+different runtime (a dedicated HAOS VM, not docker-compose), a
 different config style (YAML packages/automations), and tied to physical
 hardware (Zigbee/MQTT).
 
