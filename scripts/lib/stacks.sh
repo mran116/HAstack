@@ -48,6 +48,11 @@ stack_is_active() {
   [[ "${n:-0}" -gt 0 ]]
 }
 
+# Dirs that look like stacks but aren't app stacks. `edge` is the vendored
+# per-machine module (caddy/tailscale) — it's enabled via COMPOSE_PROFILES in the
+# bootstrap edge step, never auto-deployed by wave. Space-separated; overridable.
+STACK_EXCLUDE="${STACK_EXCLUDE:-edge}"
+
 # discover_stacks — every active stack across STACK_ROOTS, deduped, one per line.
 discover_stacks() {
   local root d s seen=" "
@@ -56,6 +61,7 @@ discover_stacks() {
       [[ -e "$d" ]] || continue
       s="$(basename "$(dirname "$d")")"
       case "$seen" in *" $s "*) continue ;; esac
+      case " $STACK_EXCLUDE " in *" $s "*) continue ;; esac
       stack_is_active "$s" && { echo "$s"; seen+="$s "; }
     done
   done
