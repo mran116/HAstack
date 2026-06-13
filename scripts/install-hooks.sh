@@ -38,6 +38,7 @@ cat > "$pp_tmp" <<'HOOK'
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 env="$([[ -f .env ]] && echo .env || echo .env.example)"
+[[ -f "$env" ]] || exit 0                # no env file -> can't resolve vars, skip
 command -v docker >/dev/null || exit 0   # no docker -> skip (CI still checks)
 fail=0
 for f in */docker-compose.yml; do
