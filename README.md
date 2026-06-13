@@ -15,6 +15,15 @@ hardware (Zigbee/MQTT).
 | `mqtt/` *(optional)* | Mosquitto broker compose, if run as a container |
 | `zigbee/` *(optional)* | Zigbee2MQTT, if run as a container |
 
+## How to use (not a bootstrap repo)
+
+Unlike the sibling stacks, this is **not** a `docker compose` / `bootstrap.sh`
+repo — Home Assistant runs as an OS (HAOS) on its own VM. This repo is the
+**version-controlled export** of that VM's config: you pull changes in via the
+HAOS Studio Code Server add-on / Samba, or push the VM's `/config` out to here.
+The only optionally-containerized bits are `mqtt/` and `zigbee/` (run elsewhere,
+e.g. on the `home`/`infra` host) if you don't run them as HA add-ons.
+
 ## Status
 
 **Skeleton only.** HA config currently lives on the HAOS VM and is edited there
