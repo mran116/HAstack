@@ -28,6 +28,7 @@ if [[ "$(current_value STACKS_PATH)" != "$REPO_DIR" ]]; then
 fi
 
 links=()
+shopt -s nullglob                       # zero stacks -> empty loop, not a literal "*/"
 for compose in */docker-compose.yml; do
   d="$(dirname "$compose")"
   link="$d/.env"
@@ -36,6 +37,7 @@ for compose in */docker-compose.yml; do
     links+=("$d")
   fi
 done
+shopt -u nullglob
 
 show_plan || exit 0
 gate || exit 0
