@@ -1,7 +1,25 @@
 # files vendored from core — managed by sync-tooling, do not edit:
 scripts/lib/common.sh
 stacks.sh
-scripts/staggered-up.sh
-scripts/stacks.sh
+scripts/create-network.sh
+scripts/diagnose.sh
+scripts/doctor.sh
+scripts/env-init.sh
+scripts/env-rebuild.sh
+scripts/env-sync.sh
+scripts/gen-secrets.sh
+scripts/harvest-keys.sh
+scripts/install-hooks.sh
+scripts/link-env.sh
+scripts/make-dirs.sh
+scripts/mount-heal-root.sh
 scripts/mount-watchdog.sh
+scripts/notify-failure.sh
+scripts/notify.sh
+scripts/schedule-maintenance.sh
+scripts/setup-fresh.sh
+scripts/stack.sh
+scripts/stacks.sh
+scripts/staggered-up.sh
+scripts/update.sh
 edge/
